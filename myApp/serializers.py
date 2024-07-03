@@ -8,6 +8,10 @@ class CustomUserSerializer(serializers.ModelSerializer):
         fields = "__all__"
         extra_kwargs = {"id": {"read_only": True}, "password": {"write_only": True}}
         
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(max_length=100)
+        
     
 class BranchSerializer(serializers.ModelSerializer):
     class Meta:

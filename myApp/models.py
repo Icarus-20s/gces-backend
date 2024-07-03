@@ -22,7 +22,7 @@ class CustomUser(models.Model):
 
     def save(self,*args,**kwargs):
         if self.password:
-            self.password=make_password(self.password)
+            self.password=make_password(self.password,hasher='bcrypt')
         super().save(*args,**kwargs)
 
 class Session(models.Model):
