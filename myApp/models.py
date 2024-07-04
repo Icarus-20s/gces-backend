@@ -4,6 +4,8 @@ from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError
 class Branch(models.Model):
     name=models.CharField(max_length=100)
+    def __str__(self) -> str:
+        return self.name
 
 class CustomUser(models.Model):
     ROLE_CHOICES=(
@@ -24,6 +26,9 @@ class CustomUser(models.Model):
         if self.password:
             self.password=make_password(self.password,hasher='bcrypt')
         super().save(*args,**kwargs)
+
+    def __str__(self):
+        return self.username
 
 class Session(models.Model):
     branch=models.ForeignKey(Branch ,on_delete=models.CASCADE)

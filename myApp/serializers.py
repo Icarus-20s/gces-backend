@@ -11,7 +11,6 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(max_length=100)
-        
     
 class BranchSerializer(serializers.ModelSerializer):
     class Meta:
