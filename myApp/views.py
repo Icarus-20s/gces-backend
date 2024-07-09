@@ -1,6 +1,6 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view,authentication_classes
-from .serializers import CustomUserSerializer, LoginSerializer
+from .serializers import ContactSerializer, CustomUserSerializer, LoginSerializer
 from rest_framework import status
 from django.contrib.auth.hashers import check_password
 from .models import CustomUser
@@ -21,7 +21,7 @@ def register(request):
 
 
 @api_view(['POST'])
-@authentication_classes([UserAuthentication])
+# @authentication_classes([UserAuthentication])
 def login(request):
     serializer = LoginSerializer(data=request.data)
     if not serializer.is_valid():
@@ -38,4 +38,16 @@ def login(request):
     return Response({
         "message": "Login successful",
         "token": str(refresh.access_token),
-    }, status=status.HTTP_200_OK)  # Use HTTP_200_OK for successful login
+    }, status=status.HTTP_200_OK) 
+
+@api_view(['POST'])
+def contact(request):
+    serializer = ContactSerializer(data = request.data)
+    if not serializer.is_valid():
+        return Response({"message":"Invalid format"},status=status.HTTP_400_BAD_REQUEST)
+    try:
+        serializer.save()
+    except Exception as e:
+        return Response({"message":str(e)},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return Response({"Message":"Data Saved"},status=status.HTTP_201_CREATED)
+    

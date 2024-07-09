@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Branch,Session, Notice, StaffSalary,CustomUser
+from .models import Branch, Contact,Session, Notice, StaffSalary,CustomUser
 from .models import Assignment, AssignmentSubmission, Note, TeacherAttendance, StudentAttendance
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -15,6 +15,10 @@ class LoginSerializer(serializers.Serializer):
 class BranchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Branch
+        fields = '__all__'
+class ContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contact
         fields = '__all__'
 
 class SessionSerializer(serializers.ModelSerializer):
