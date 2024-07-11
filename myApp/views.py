@@ -56,7 +56,6 @@ def contact(request):
     
 
 
-
 @api_view(['GET','PUT'])
 @authentication_classes([UserAuthentication])
 def user_profile_view(request):
