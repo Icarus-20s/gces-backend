@@ -1,9 +1,9 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view,authentication_classes
-from .serializers import ContactSerializer, CustomUserSerializer, LoginSerializer
+from .serializers import ContactSerializer, CustomUserSerializer, LoginSerializer ,NoticeSerializer,NoteSerializer
 from rest_framework import status
 from django.contrib.auth.hashers import check_password
-from .models import CustomUser
+from .models import CustomUser, Notice
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -72,4 +72,21 @@ def user_profile_view(request):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    
 
+
+@api_view(['POST','GET'])
+@authentication_classes([UserAuthentication])
+def notice(request):
+    if request.method=="POST":
+        serializer = NoticeSerializer(data = request.data)
+        if not serializer.is_valid():
+            return Response({'message':serializer.errors},status=status.HTTP_400_BAD_REQUEST)
+        serializer.save()
+        return Response({"message":"Notice saved"},status=status.HTTP_201_CREATED)
+    elif request.method=="GET":
+        notice = Notice.objects.all()
+        serializer = NoticeSerializer(notice,many = True)
+        return Response(serializer.data)
+
+    

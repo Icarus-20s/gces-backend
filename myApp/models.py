@@ -41,6 +41,9 @@ class Notice (models.Model):
     content= models.TextField()
     date_posted = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self) -> str:
+        return self.title
+
     
 class StaffSalary(models.Model):
     staff = models.ForeignKey(CustomUser , on_delete=models.CASCADE)
