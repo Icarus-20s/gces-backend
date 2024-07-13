@@ -29,7 +29,7 @@ class SessionSerializer(serializers.ModelSerializer):
 class NoticeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notice
-        fields = ['branch','title','date_posted','content']
+        fields = ['id','branch','title','date_posted','content']
 
 class StaffSalarySerializer(serializers.ModelSerializer):
     class Meta:
