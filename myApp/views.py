@@ -6,14 +6,13 @@ from .serializers import (
     LoginSerializer,
     NoticeSerializer,
     NoteSerializer,
+    AssignmentSerializer,
+    AssignmentSubmissionSerializer
 )
 from rest_framework import status
 from django.contrib.auth.hashers import check_password
-from .models import CustomUser, Notice
+from .models import CustomUser, Notice,Assignment,AssignmentSubmission
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.tokens import AccessToken
 from myApp.authentication import UserAuthentication
 
 
@@ -135,3 +134,19 @@ def notice_update(request, id):
     elif request.method == "DELETE":
         notice_instance.delete()
         return Response({"message": "Notice deleted"}, status=status.HTTP_204_NO_CONTENT)
+    
+
+@api_view(['POST','GET'])
+@authentication_classes([UserAuthentication])
+def assignment_creation(request):
+    if request.method == "GET":
+        assignments = Assignment.objects.all()
+        serializer = AssignmentSerializer(assignments, many=True)
+        return Response({"Message": serializer.data}, status=status.HTTP_200_OK)
+    elif request.method == "POST":
+        request.data['teacher'] = request.user.id 
+        serializer = AssignmentSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response({"Message": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        serializer.save()
+        return Response({"Message": "Uploaded"}, status=status.HTTP_201_CREATED)

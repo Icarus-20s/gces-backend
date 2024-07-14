@@ -64,6 +64,10 @@ class Assignment(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
     deadline = models.DateField()
+    file_assignment = models.FileField(upload_to='assignment/',blank=True,null=True)
+
+    def __str__(self) -> str:
+        return self.title
 
 
 class AssignmentSubmission(models.Model):

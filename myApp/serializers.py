@@ -39,7 +39,7 @@ class StaffSalarySerializer(serializers.ModelSerializer):
 class AssignmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assignment
-        fields = '__all__'
+        fields = ['title','description','deadline','file_assignment' ]
 
 class AssignmentSubmissionSerializer(serializers.ModelSerializer):
     class Meta:
