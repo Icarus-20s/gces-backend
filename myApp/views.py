@@ -7,11 +7,11 @@ from .serializers import (
     NoticeSerializer,
     NoteSerializer,
     AssignmentSerializer,
-    AssignmentSubmissionSerializer
+    AssignmentSubmissionSerializer,
 )
 from rest_framework import status
 from django.contrib.auth.hashers import check_password
-from .models import CustomUser, Notice,Assignment,AssignmentSubmission
+from .models import CustomUser, Notice, Assignment, AssignmentSubmission
 from rest_framework_simplejwt.tokens import RefreshToken
 from myApp.authentication import UserAuthentication
 
@@ -110,6 +110,7 @@ def notice_view(request):
         serializer = NoticeSerializer(notices, many=True)
         return Response(serializer.data)
 
+
 @api_view(["GET", "PUT", "DELETE"])
 @authentication_classes([UserAuthentication])
 def notice_update(request, id):
@@ -133,20 +134,57 @@ def notice_update(request, id):
 
     elif request.method == "DELETE":
         notice_instance.delete()
-        return Response({"message": "Notice deleted"}, status=status.HTTP_204_NO_CONTENT)
-    
+        return Response(
+            {"message": "Notice deleted"}, status=status.HTTP_204_NO_CONTENT
+        )
 
-@api_view(['POST','GET'])
+
+@api_view(["POST", "GET"])
 @authentication_classes([UserAuthentication])
 def assignment_creation(request):
+    user = request.user
+
     if request.method == "GET":
         assignments = Assignment.objects.all()
         serializer = AssignmentSerializer(assignments, many=True)
         return Response({"Message": serializer.data}, status=status.HTTP_200_OK)
+
     elif request.method == "POST":
-        request.data['teacher'] = request.user.id 
-        serializer = AssignmentSerializer(data=request.data)
-        if not serializer.is_valid():
+        data = request.data.copy()
+        data['teacher'] = user.id
+
+        file_assignment = request.FILES.get('file_assignment')
+        
+        if file_assignment:
+            data['file_assignment'] = file_assignment
+
+        serializer = AssignmentSerializer(data=data)
+        if serializer.is_valid():
+            assignment = serializer.save()
+            return Response({"Message": "Uploaded"}, status=status.HTTP_201_CREATED)
+        else:
             return Response({"Message": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-        serializer.save()
-        return Response({"Message": "Uploaded"}, status=status.HTTP_201_CREATED)
+   
+
+@api_view(["GET", "PUT", "DELETE"])
+@authentication_classes([UserAuthentication])
+def assignment_update(request, id):
+    try:
+        assignment_instance = Assignment.objects.get(id=id)
+    except Assignment.DoesNotExist:
+        return Response({"message": "Assignment not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == "DELETE":
+        assignment_instance.delete()
+        return Response({"message": "Assignment deleted"}, status=status.HTTP_204_NO_CONTENT)
+
+    if request.method == "GET":
+        serializer = AssignmentSerializer(assignment_instance)
+        return Response(serializer.data)
+
+    if request.method == "PUT":
+        serializer = AssignmentSerializer(assignment_instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
