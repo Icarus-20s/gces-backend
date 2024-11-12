@@ -74,7 +74,7 @@ class AssignmentSubmission(models.Model):
     assignment= models.ForeignKey(Assignment, on_delete=models.CASCADE)
     student= models.ForeignKey(CustomUser ,on_delete=models.CASCADE)
     text_submission= models.TextField(blank=True ,null=True)
-    file_submission=models.FileField(upload_to='assignment_submissions',blank=True, null=True)
+    file_submission=models.FileField(upload_to='assignment_submissions/',blank=True, null=True)
     submission_date = models.DateTimeField(auto_now_add=True)
 
 class Note(models.Model):

@@ -150,9 +150,7 @@ SIMPLE_JWT = {
     "USER_ID_CLAIM": "user_id",
      "JTI_CLAIM": "jti",
 }
-
 import os
-
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MEDIA_URL = 'media/'
